@@ -1,0 +1,47 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: node-validation.k8s.io
+webhooks:
+- admissionReviewVersions: ["v1", "v1beta1"]
+  clientConfig:
+    url: https://rawkode.default.mink.dev/validate
+  failurePolicy: Fail
+  sideEffects: None
+  name: node-validation.k8s.io
+  timeoutSeconds: 10
+  rules:
+  - apiGroups:
+    - ""
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - nodes/*
+    scope: Cluster
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: node-defaulting.k8s.io
+webhooks:
+- admissionReviewVersions: ["v1", "v1beta1"]
+  clientConfig:
+    url: https://rawkode.default.mink.dev/mutate
+  failurePolicy: Fail
+  sideEffects: None
+  name: node-defaulting.k8s.io
+  timeoutSeconds: 10
+  rules:
+  - apiGroups:
+    - ""
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - nodes/*
+    scope: Cluster
